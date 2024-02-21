@@ -1,0 +1,219 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- here the cdn for import the aframe librarry -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <!--  Here the cdn for the import the mindAr.js library  -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+</head>
+
+<!--  in script give the logic of the faceAr when we click the perticuler image we show the perticuler ar so it imaplimt by javascript which provide below beween the script tag -->
+
+<script>
+  /* 
+  here the when click the scrolbar button it show ar fillte according to clicked button of the scroller bar 
+  full process is the continious contetnt loading it and first need understnad when we change  in webbrower everny compornt is dom
+
+  it set as dom tree when we write the html genrate the dom tree for every loading of web page 
+  so when we chage any dom  value or paramter of html tag we apply some event we requre the some dom method 
+  here java script apply for that some event here addEventlister according our procrss here the use DOMContentLoaded 
+
+   take Lister as perameter next logic add into that l so  it show continius process on browser
+   */
+
+   document.addEventListener('DOMContentLoaded', function(){
+
+    //list of image id which is taken into image 
+    const list = [ "mask", "eyeglass" , "hat", "vrheadset" ] 
+      //   we take next array which accordint to array id take array of bool which defoult value is false 
+
+     const visible =list.map(() =>false);
+
+
+  //   function which is set the visibility of ar model
+   const  setVisible = ( button , model ,  visible)=>{
+        button.classList.toggle("selected", visible)
+        //  here when seelect dom of model it is class so that give array of model so that we requie ti change perticuter armodel visibile attribute  using forEach loop change for each accoding that visible value 
+
+        model.forEach((value) => {value.setAttribute("visible", visible)})
+
+
+  
+
+   }
+
+
+
+
+      // here apply for everny if of image which image so that use forEach which define the every image id  and select thier dom using querySelector method.
+      
+       list.forEach((value , index) => {
+  //  select the image dom  for apply some event store into the   button veriable
+   const button = document.querySelector(`#${value}`) 
+  //   same  select the each ar model  but here give class which same for every a-gltf-model tag so we use the qyerySelectorAll
+  const  models = document.querySelectorAll(`.${value}-entity`)
+  //   you can also cheak it selected or not using consle log that 
+  setVisible(button,models , visible[index]) // initilize the value to all fillter 
+
+    
+    button.addEventListener('click',  function(){
+  //   set visiblity accodint to change
+       visible[index]=!visible[index]
+       setVisible(button, models, visible[index]);
+
+    })
+
+
+  
+
+
+       })
+
+   }  )
+
+
+   
+</script>
+<style>
+  /*  here the some csss wich apply on scene and  scrollbar also  */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+  }
+
+  .panel {
+    position: fixed;
+    z-index: 2;
+    max-width: 100%;
+    display: flex;
+    top: 90%;
+    align-self: center;
+    left: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .panel img {
+    width: 50px;
+    height: 50px;
+    border: 2px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 10px;
+    overflow-x: auto;
+
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+
+
+  }
+
+  .panel img.selected {
+    transform: scale(4xl);
+    border: solid green;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <div class="panel">
+      <!--  here the image which is show in  scrollbar as buttons  every img have id which use to define accoring click the img show we the perticuter ar Fillter  on the face -->
+      <img src="https://img.fruugo.com/product/9/97/461268979_max.jpg" alt="" id="mask">
+      <!-- hat img button-->
+      <img src="https://m.media-amazon.com/images/I/41TrawONGHL._SX679_.jpg" alt="" id="eyeglass">
+      <!--  googles img button-->
+      <img src="https://t3.ftcdn.net/jpg/02/75/74/58/360_F_275745846_slBI2EsTudIShef6hMliS6Oa123tC9Zv.jpg" alt=""
+        id="hat"> <!-- hat image button -->
+      <img src="https://m.media-amazon.com/images/I/71nhYMNASAL.jpg" alt="" id="vrheadset">
+      <!-- VRHeadset image button-->
+
+
+    </div>
+    <!--  here tag acene wich create ar view for render the ar on the brower which consiste many atribute  
+     here the one of that is 
+      
+      mindar-face = which  allow to track the face  on the browere and  behind scene it create the cordinate on the user Face
+       vr-mode-ui = here the enble vr mode on scene here that defoult value is false show we not require the vr mode for this face ar application  , 
+
+       color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+       here atribute wich use for collaber manangement and redermanagement on the ar scene 
+
+
+
+    -->
+    <a-scene mindar-face embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <!--  here tag a-asset which provide the containter which render the ar compoment to the browser 
+       when you import  ar any  external ar component in ar view so you require it give on the a-aaset tag 
+
+    
+      -->
+      <a-assets>
+         <!--  a-asset item tag use  take  any ar component location from file and render into the ar view by a-asset tag here we give a perticuler id so that imapliment ar componet possion scale  using a-enity tag  -->
+        <a-asset-item id="glassesModel"
+          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
+      </a-assets>
+
+      <a-asset-item id="MaskModel"
+      src="./gas_mask copy.glb"></a-asset-item>
+
+      <a-asset-item id="hatModel"
+      src="./witch_hat.glb"></a-asset-item>
+      
+      <a-asset-item id="vrheadsetModel"
+      src="./vr_headset_free_model copy.glb"></a-asset-item>
+  </a-assets>
+
+      <!--  here the a-camera tag provide run camara into the browser  it privide the accebility of camere  here some attribute 
+        activde : which allow access the multiple camera on the browser 
+         possion : it give the intical possion of the camera 
+      -->
+
+      <a-camera active="false" position="0 0 0"></a-camera>
+      <!--  hera the enity tag  as per name  enity means componet here assume box which allow to imapliment the defoult possion of the ar component on the browser
+        here take defoult possion by using this parameter
+        mindar-face-target = as per mindar-face pearamter when traker face it genrate the some cordinate on face 
+         this paramter target ar position on that genrated cordinate which callted the achorIndex 
+         here also take achorIndex take as perameter and according Image ar fillter give achorIndex example
+         for glass we take achorIndex 168 ( between the eyes )
+          for the mask we give the achorIndex 1 (on the Nose)
+      -->
+
+
+        <!--  here a-gktf-model tag is define the arcomponent type us 3d model which consist glb or obj like 3d file 
+           here that have some artribute 
+            rotation : rotate  Ar component according to that axix take first 3 index fist is x axix , second is y axix , third one is z axix rotation  
+            position  : simmler like roation attribute give distance on the  3d axix
+             scale :  simmer above but it give scale on 3d axix 
+             src : when give if on a-asset-Item it givem id we must defile that id on the perticuter  ar component for below tag so according that we change that impoted ar component possion scale rotaion in 
+            
+             here   
+         -->
+        <a-entity mindar-face-target="anchorIndex: 168">
+        <a-gltf-model visible="false" rotation="0 0 0" position="0 0 0" scale="0.01 0.01 0.01" src="#glassesModel" class="eyeglass-entity"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-face-target="anchorIndex: 1">
+        <a-gltf-model visible="false" rotation="0 0 0" position="-0.1 -0.5 -0.2" scale="0.024 0.024 0.024" src="#MaskModel" class="mask-entity"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-face-target="anchorIndex: 10">
+        <a-gltf-model visible="false" rotation="0 0 0" position="0 0.2 -2" scale="0.5 0.5 0.5" src="#hatModel" class="hat-entity"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-face-target="anchorIndex: 10">
+        <a-gltf-model visible="false" class="vrheadset-entity" rotation="0 0 0" position="0 0 -0.3" scale="1 1 0.8" src="#vrheadsetModel" ></a-gltf-model>
+      </a-entity>
+    </a-scene>
+  </div>
+
+</body>
+
+</html>
